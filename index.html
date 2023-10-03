@@ -219,13 +219,13 @@
         table+=mkcell(2,1,mkaudio(`vc_demos/src/${srcs[src]}`))
         table+=mkcell(1,1,'Vec-Tok Speech')
         for (let tgt in tgts){
-          table+=mkaudiocell(`vc_demos/vec-tok/result_${tgts[src]}/${srcs[src]}`)
+          table+=mkaudiocell(`vc_demos/vec-tok/result_${tgts[tgt]}/${srcs[src]}`)
         }
         table+='</tr>'
         table+='<tr>'
         table+=mkcell(1,1,'LM-VC')
         for (let tgt in tgts){
-          table+=mkaudiocell(`vc_demos/LM-VC/result_${tgts[src]}/${srcs[src]}`)
+          table+=mkaudiocell(`vc_demos/LM-VC/result_${tgts[tgt]}/${srcs[src]}`)
         }
         table+='</tr>'
       }
