@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="en-US">
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+
+  <!-- Begin Jekyll SEO tag v2.7.1 -->
+  <title>VecTok Speech
+  </title>
+  <meta name="generator" content="Jekyll v3.9.0">
+  <meta property="og:title" content="VecTok Speech">
+  <meta property="og:locale" content="en_US">
+  <meta name="twitter:card" content="summary">
+  <!-- End Jekyll SEO tag -->
+
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#157878">
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body data-new-gr-c-s-check-loaded="14.1001.0" data-gr-ext-installed="">
+  <section class="page-header">
+    <h1 class="project-name">Vec-Tok Speech:</br>Speech Vectorization and Tokenization</br>for Neural Speech Generation</h1>
+    <h2 class="project-tagline">A work submitted to ICLR2024</h2>
+
+
+  </section>
+
+  <section class="main-content">
+
+    <h2>Contents</h2>
+    <ol>
+      <li><a href="#abstract">Abstract</a></li>
+      <li><a href="#TTS_Demo">TTS Demos</a></li>
+      <li><a href="#VC">Voice Conversion Demos</a></li>
+      <li><a href="#S2ST">S2ST Demos</a></li>
+    </ol>
+
+    <br><br>
+    <h2 id="abstract">1. Abstract<a name="abstract"></a></h2>
+    <p>Recently, Language models (LMs) have flourished in natural language processing and computer vision domains. These models generate high-fidelity text or image outputs and can be extended to various tasks. In contrast, speech generative models are still struggling in terms of speech quality and task generalization. In this paper, we present Vec-Tok Speech, an extensible framework that resembles multiple speech generation tasks, generating expressive and high-fidelity speech. Specifically, we propose a novel speech codec based on speech vectors and semantic tokens. Speech vectors contain acoustic details contributing to high-fidelity speech reconstruction, while semantic tokens focus on the linguistic content of speech serving LMs. Based on the proposed speech codec, Vec-Tok Speech leverages LMs to undertake the core of speech generation. Moreover, Byte-Pair Encoding (BPE) is used to improve the efficiency of LMs. Vec-Tok speech can be used for mono or cross-lingual zero-shot voice conversion (VC), zero-shot speaking style transfer text-to-speech (TTS), speech-to-speech translation (S2ST), speech enhancement, and beyond. Experiments on 50k hours of speech show that Vec-Tok speech achieves multiple speech generation tasks with better performance compared to other SOTA models.</p>
+
+    <!-- <center><img src=''></center> -->
+    <br><br>
+
+
+    <h2>2. TTS demos<a name="TTS_Demo"></a></h2>
+      <h3>2.1 Style prompt and speaker prompt</h3>
+      <p>In this section, we demonstrate the effect of style prompt and speaker prompt by generating speeches from different prompts</p>
+
+        <h4>English</h4>
+        <p>Text: The army found the people in poverty and left them in comparative wealth.</p>
+        <table>
+          <tbody id="prompt_table_en"></tbody>
+        </table>
+
+        <h4>Chinese</h4>
+        <p>Text: 而当下的中国产品不仅追求性价比，更需要对世界有影响力的。</p>
+        <table>
+          <tbody id="prompt_table_cn"></tbody>
+        </table>
+
+      <h3>2.2 Compare with Bark and Vall-E-X</h3>
+      <p>In this section, we compare our system with Bark and Vall-E-X</p>
+      <table>
+        <tbody id="tts_compare"></tbody>
+      </table>
+
+      <h3>2.3 Ablation of BPE encoding</h3>
+      <p>In this section, we demonstrate the effect of BPE encoding, it enhances the stability of longer sentence generation</p>
+      <table>
+        <tbody id="bpe_ablation"></tbody>
+      </table>
+    <h2>3. Voice Conversion Demos<a name="VC"></a></h2>
+    <p>In this Section, we show the voice conversion performance of our Vec-Tok Speech</p>
+    <table>
+      <tbody id="voice_conversion"></tbody>
+    </table>
+
+    <h2>4. S2ST Demos<a name="S2ST"></a></h2>
+    <p>In this Section, we show the speech to speech translation performance of our Vec-Tok Speech</p>
+    <table>
+      <tbody id="translation"></tbody>
+    </table>
+
+
+  </section>
+</body>
+
+</html>
+
+
+
+<script type="text/javascript">
+  window.onload = function () {
+    let mkcell=function (row=1,col=1,content='',extra_style=''){
+      return `<td style="text-align: center; width: 150px;${extra_style}" rowspan=${row} colspan=${col}>${content}</td>`
+    }
+    let mkaudio=function (path){
+      return `<audio style="width: 150px;" controls="" src="${path}.wav"/>`
+    }
+    let mkaudiocell=function (path){
+      return mkcell(1,1,mkaudio(path))
+    }
+
+    //2.1
+    let draw_tts_table=function (dirname) {
+      let prompts=['shantianfang_baimei','30','LY-8','00993_single','不知名英文发音人2','LJ049-0124_24K']
+      let table=`
+        <tr>
+          ${mkcell(2,2)}
+          ${mkcell(1,6,'Speaker Prompts')}
+        </tr>`
+      table+='<tr>'
+      for (let prompt in prompts){
+        table+=mkaudiocell(`tts_demos/prompts/${prompts[prompt]}`)
+      }
+      table+='</tr>'
+      table+='<tr>'
+      table+=mkcell(6,1,'Style Prompts')
+      for (let prompt in prompts){
+        if (prompt!=0){
+          table+='<tr>'
+        }
+        table+=mkaudiocell(`tts_demos/prompts/${prompts[prompt]}`)
+        for (let spk_prompt in prompts){
+          table+=mkaudiocell(`tts_demos/table/${dirname}/${prompts[prompt]}-${prompts[spk_prompt]}`)
+        }
+        table+='</tr>'
+      }
+      return table
+    }
+    document.getElementById('prompt_table_en').innerHTML=draw_tts_table('en')
+    document.getElementById('prompt_table_cn').innerHTML=draw_tts_table('zh')
+
+    //2.2
+    let draw_compare_table=function (){
+      table=`
+        <tr>
+          ${mkcell(2,1,'Prompt')}
+          ${mkcell(2,1,'Text')}
+          ${mkcell(1,3,'TTS System')}
+        </tr>
+        <tr>
+          ${mkcell(1,1,'Bark')}
+          ${mkcell(1,1,'Vall-E-X')}
+          ${mkcell(1,1,'Vec-Tok Speech')}
+        </tr>
+      `
+      let systems=['bark','valle','vectok']
+      let files=[
+        ['30','而当下的中国产品不仅追求性价比，更需要对世界有影响力的。','30-6'],
+        ['LY-8','或许，当下就是一个更加需要致敬工程师精神。','LY-8-0'],
+        ['00993_single','The army found the people in poverty and left them in comparative wealth.','00993_single-en_4'],
+        ['TIM_315','During the period the Commission was giving thought to this situation.','TIM_315-en_2'],
+      ]
+      
+      for (let file in files){
+        table+='<tr>'
+        let [prompt,text,filename]=files[file]
+        table+=mkaudiocell(`tts_demos/prompts/${prompt}`)
+        table+=mkcell(1,1,text)
+        for (let sys in systems){
+          table+=mkaudiocell(`tts_demos/compare/${systems[sys]}/${filename}`)
+        }
+        table+='</tr>'
+      }
+      return table
+    }
+    document.getElementById('tts_compare').innerHTML=draw_compare_table()
+
+    //2.3
+    let draw_bpe_ablation=function (){
+      table=`
+        <tr>
+          ${mkcell(1,1,'Prompt')}
+          ${mkcell(1,1,'Text')}
+          ${mkcell(1,1,'w/o BPE encoding')}
+          ${mkcell(1,1,'with BPE encoding')}
+        </tr>
+        <tr>
+          ${mkaudiocell(`tts_demos/bpe_ablation/prompts/1`)}
+          ${mkcell(1,1,'他看了看手表，离一点四十五分还有一个小时。而他知道，再用不了二十分钟，就能走到那棵伤心树下。他要按她说的，准时走到那地方。')}
+          ${mkaudiocell(`tts_demos/bpe_ablation/nobpe/1`)}
+          ${mkaudiocell(`tts_demos/bpe_ablation/bpe/1`)}
+        </tr>
+        <tr>
+          ${mkaudiocell(`tts_demos/bpe_ablation/prompts/2`)}
+          ${mkcell(1,1,'首先映入眼帘的是小桌上那个带黑边的像框。晓霞头稍稍歪着，烂漫的笑容像春天的鲜花和夏日里明媚的太阳。那双美丽的眼睛欣喜地直望着他，亲爱的人，你终于来了！')}
+          ${mkaudiocell(`tts_demos/bpe_ablation/nobpe/2`)}
+          ${mkaudiocell(`tts_demos/bpe_ablation/bpe/2`)}
+        </tr>
+      `
+      return table
+    }
+    document.getElementById('bpe_ablation').innerHTML=draw_compare_table()
+
+    //3
+    let draw_vc=function (){
+      let srcs=['404042','0302001002','hvd_701_1','king_033_600482']
+      let tgts=['993','LY','MP105','TIM']
+      table=`
+      <tr>
+        ${mkcell(2,3,'')}
+        ${mkcell(1,4,'Target Speaker')}
+      </tr>
+      <tr>
+      `
+      for (let tgt in tgts){
+        table+=mkaudiocell(`vc_demos/target/${tgts[tgt]}`)
+      }
+      table+='</tr>'
+      for (let src in srcs){
+        table+='<tr>'
+        if (src==0){
+          table+=mkcell(8,1,'Source Speech')
+        }
+        table+=mkcell(2,1,mkaudio(`vc_demos/src/${srcs[src]}`))
+        table+=mkcell(1,1,'Vec-Tok Speech')
+        for (let tgt in tgts){
+          table+=mkaudiocell(`vc_demos/vec-tok/result_${tgts[src]}/${srcs[src]}`)
+        }
+        table+='</tr>'
+        table+='<tr>'
+        table+=mkcell(1,1,'LM-VC')
+        for (let tgt in tgts){
+          table+=mkaudiocell(`vc_demos/LM-VC/result_${tgts[src]}/${srcs[src]}`)
+        }
+        table+='</tr>'
+      }
+      return table
+    }
+    document.getElementById('voice_conversion').innerHTML=draw_vc()
+    
+    //4
+    let draw_s2st=function (){
+      let datas=[
+        ['YOU1000000156_S0000090','第二次世界大战给这个国家带来了一种我们自那以后从未见过的爱国主义情绪。','Second World War brought about<br/>a sense of patriotism in this country,<br/>that we have not seen since.','第二次世界大战带来了这个国家的爱国主义，从那以后，我们就没见过了。'],
+        ['POD1000000012_S0000054','我们别想这件事了。',"Let's stop and think here.",'让我们在这里停下来思考。'],
+        ['POD1000000024_S0000097','对我来说重要的是，我们能够一起做出如此重大的决定。','It was important to me that</br>we were able to make a decision this big together.','对我来说，重要的是，我们能够一起做出这么大的决定。']
+      ]
+      table=`
+      <tr>
+        ${mkcell(1,1,'Source Audio')}
+        ${mkcell(1,1,'Source Text')}
+        ${mkcell(1,1,'Translated Audio')}
+        ${mkcell(1,1,'Transcribed Text')}
+        ${mkcell(1,1,'Target Text')}
+      </tr>
+      `
+      for (let data in datas){
+        let [name,tgt_text,src_text,trans_text]=datas[data]
+        table+=`
+        <tr>
+          ${mkaudiocell(`s2st_demos/src/${name}`)}
+          ${mkcell(1,1,src_text,'white-space: nowrap;')}
+          ${mkaudiocell(`s2st_demos/target/${name}`)}
+          ${mkcell(1,1,trans_text)}
+          ${mkcell(1,1,tgt_text)}
+        </tr>
+        `
+      }
+      return table
+    }
+    document.getElementById('translation').innerHTML=draw_s2st()
+  }
+</script>
