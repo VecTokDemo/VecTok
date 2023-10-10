@@ -32,9 +32,23 @@
     <h2>Contents</h2>
     <ol>
       <li><a href="#abstract">Abstract</a></li>
-      <li><a href="#TTS_Demo">TTS Demos</a></li>
+      <li><a href="#TTS_Demo">TTS Demos</a>
+        <ol>
+          <li><a href="#TTS_prompt">Style prompt and speaker prompt</a></li>
+          <li><a href="#TTS_Compare">Compare with Bark and Vall-E-X</a></li>
+          <li><a href="#TTS_BPE_Ablation">Ablation of BPE encoding</a></li>
+        </ol>
+      </li>
       <li><a href="#VC">Voice Conversion Demos</a></li>
       <li><a href="#S2ST">S2ST Demos</a></li>
+      <li><a href="#Other">Other Demos</a>
+        <ol>
+          <li><a href="#Other_denoise">Speech denoising</a></li>
+          <li><a href="#Other_sr">Bandwidth extension</a></li>
+          <li><a href="#Other_deid">Speaker de-identification</a></li>
+          <li><a href="#Other_anon">Anonymization</a></li>
+        </ol>
+      </li>
     </ol>
 
     <br><br>
@@ -46,7 +60,7 @@
 
 
     <h2>2. TTS demos<a name="TTS_Demo"></a></h2>
-      <h3>2.1 Style prompt and speaker prompt</h3>
+      <h3>2.1 Style prompt and speaker prompt<a name="TTS_prompt"></a></h3>
       <p>In this section, we demonstrate the effect of style prompt and speaker prompt by generating speeches from different prompts</p>
 
         <h4>English</h4>
@@ -61,13 +75,13 @@
           <tbody id="prompt_table_cn"></tbody>
         </table>
 
-      <h3>2.2 Compare with Bark and Vall-E-X</h3>
+      <h3>2.2 Compare with Bark and Vall-E-X<a name="TTS_Compare"></a></h3>
       <p>In this section, we compare our system with Bark and Vall-E-X</p>
       <table>
         <tbody id="tts_compare"></tbody>
       </table>
 
-      <h3>2.3 Ablation of BPE encoding</h3>
+      <h3>2.3 Ablation of BPE encoding<a name="TTS_BPE_Ablation"></a></h3>
       <p>In this section, we demonstrate the effect of BPE encoding, it enhances the stability of longer sentence generation</p>
       <table>
         <tbody id="bpe_ablation"></tbody>
@@ -82,6 +96,28 @@
     <p>In this Section, we show the speech to speech translation performance of our Vec-Tok Speech</p>
     <table>
       <tbody id="translation"></tbody>
+    </table>
+
+    <h2>5. Other Applications<a name="Other"></a></h2>
+    <p>In this Section, we demonstrate the result of our applications mentioned in Section 3.4</p>
+    <h3>5.1 Speech denoising<a name="Other_denoise"></a></h3>
+    <table>
+      <tbody id="denoise"></tbody>
+    </table>
+
+    <h3>5.2 Bandwidth extension<a name="Other_sr"></a></h3>
+    <table>
+      <tbody id="sr"></tbody>
+    </table>
+
+    <h3>5.3 Speaker de-identification<a name="Other_deid"></a></h3>
+    <table>
+      <tbody id="rm_spk"></tbody>
+    </table>
+
+    <h3>5.4 Anonymization<a name="Other_anon"></a></h3>
+    <table>
+      <tbody id="anonymous"></tbody>
     </table>
 
 
@@ -264,5 +300,35 @@
       return table
     }
     document.getElementById('translation').innerHTML=draw_s2st()
+
+    //5 misc
+    let draw_misc=function (task,names,target_name){
+      table=`
+      <tr>
+      ${mkcell(1,1,'Source Audio')}
+      ${mkcell(1,1,target_name)}
+      </tr>
+      `
+      for (let name in names){
+        table+=`
+        <tr>
+        ${mkaudiocell(`misc_demos/${task}/source/${names[name]}`)}
+        ${mkaudiocell(`misc_demos/${task}/wavs/${names[name]}`)}
+        </tr>
+        `
+      }
+      return table
+    }
+    let tasks=['denoise','sr','rm_spk','anonymous']
+    let task_names=['Denoised Speech','Bandwidth extended speech','De-idenfied speech','Anonymized speech']
+    let names=[
+      ['Y0000019579_oVjQZXMfEI0_S00619','Y0000019670_ojsEIkIxkXI_S00126','Y0000019706_opa23NfKN20_S01477'],
+      ['28-male','DB-CN-F-03_000349','db1_002982'],
+      ['5','biaobei_8316010','db6_angry_220002'],
+      ['1','avengers_bCAPTAINAMERICA_M_PRC_R3_TC030026_0','robo100_092_092266']
+    ]
+    for (let task in tasks){
+      document.getElementById(tasks[task]).innerHTML=draw_misc(tasks[task],names[task],task_names[task])
+    }
   }
 </script>
