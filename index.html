@@ -48,6 +48,7 @@
           <li><a href="#Other_anon">Speaker anonymization</a></li>
         </ol>
       </li>
+      <li><a href="#Recon">Speech Reconstruction Demos</a></li>
     </ol>
 
     <br><br>
@@ -118,7 +119,12 @@
     <table>
       <tbody id="anonymous"></tbody>
     </table>
-
+    
+    <h2>6. Speech Reconstruction<a name="Recon"></a></h2>
+    <p>In this section, we demonstrate the reconstruction quality of our codec. Note that the source speech is 16kHz and the reconstructed speech is 24Khz.</p>
+    <table>
+      <tbody id="recon"></tbody>
+    </table>
 
   </section>
 </body>
@@ -329,5 +335,29 @@
     for (let task in tasks){
       document.getElementById(tasks[task]).innerHTML=draw_misc(tasks[task],names[task],task_names[task])
     }
+    //6 recon
+    let draw_recon=function (){
+      let names=['0301001002', 'MP105_300085', 'hvd_709_1', '00982_single', 'VCF1_150006', '00987_single']
+      table=`
+        <tr>
+        ${mkcell(1,1,'Source Audio')}
+        ${mkcell(1,1,'Reconstruct from feature')}
+        ${mkcell(1,1,'Reconstruct from token')}
+        </tr>
+        `
+        for (let name in names){
+          table+=`
+          <tr>
+          ${mkaudiocell(`misc_demos/recon/src/${names[name]}`)}
+          ${mkaudiocell(`misc_demos/recon/feature/${names[name]}`)}
+          ${mkaudiocell(`misc_demos/recon/token/${names[name]}`)}
+          </tr>
+          `
+        }
+        return table
+      }
+    document.getElementById('recon').innerHTML=draw_recon()
   }
+
+  
 </script>
