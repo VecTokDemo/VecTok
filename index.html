@@ -139,7 +139,7 @@
       return `<td style="text-align: center; width: 150px;${extra_style}" rowspan=${row} colspan=${col}>${content}</td>`
     }
     let mkaudio=function (path){
-      return `<audio style="width: 150px;" controls="" src="${path}.wav"/>`
+      return `<audio style="width: 150px;" controls="" preload="none" src="${path}.wav"/>`
     }
     let mkaudiocell=function (path){
       return mkcell(1,1,mkaudio(path))
@@ -255,9 +255,9 @@
       for (let src in srcs){
         table+='<tr>'
         if (src==0){
-          table+=mkcell(8,1,'Source Speech')
+          table+=mkcell(12,1,'Source Speech')
         }
-        table+=mkcell(2,1,mkaudio(`vc_demos/src/${srcs[src]}`))
+        table+=mkcell(3,1,mkaudio(`vc_demos/src/${srcs[src]}`))
         table+=mkcell(1,1,'Vec-Tok Speech')
         for (let tgt in tgts){
           table+=mkaudiocell(`vc_demos/vec-tok/result_${tgts[tgt]}/${srcs[src]}`)
@@ -267,6 +267,12 @@
         table+=mkcell(1,1,'LM-VC')
         for (let tgt in tgts){
           table+=mkaudiocell(`vc_demos/LM-VC/result_${tgts[tgt]}/${srcs[src]}`)
+        }
+        table+='</tr>'
+        table+='<tr>'
+        table+=mkcell(1,1,'SEF-VC')
+        for (let tgt in tgts){
+          table+=mkaudiocell(`vc_demos/sef-vc/result_${tgts[tgt]}/${srcs[src]}`)
         }
         table+='</tr>'
       }
